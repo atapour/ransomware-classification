@@ -155,7 +155,7 @@ class TheModel():
         for param in self.net.parameters():
             num_params += param.numel()
 
-        print('{}{}{}{}{}{}{}{}'.format(blue, 'There are a total number of ', red, num_params, ' parameters', blue, ' in the model.', reset))
+        print(f'{blue}There are a total number of {red}{num_params} parameters{blue} in the model.{reset}')
         print('')
 
     # this function returns the loss value
@@ -228,3 +228,6 @@ class TheModel():
         ret['out'] = output
 
         return ret
+    
+    def return_model(self):
+        return self.net

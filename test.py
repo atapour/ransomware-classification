@@ -49,9 +49,6 @@ with torch.no_grad():
                 accuracy += out.eq(gt).float().mean()
 
 accuracy /= dataset_size
-# print(accuracy, dataset_size)
-# print(f'gt.len: {len(gts)}')
-# print(f'pred.len: {len(preds)}')
 f1 = calculate_f1_score(gts, preds)
 auc = multiclass_roc_auc_score(gts, preds)
 
