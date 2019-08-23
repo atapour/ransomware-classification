@@ -95,18 +95,26 @@ def load_model(args):
 
     elif args.arch == 'AmirNet': # 1,875,666 parameters
         model = AmirNet(num_classes=args.num_classes)
+        if args.input_size != 128:
+            raise ValueError('AmirNet only accepts images of size 128 x 128!')
         print("AmirNet has been loaded.")
 
     elif args.arch == 'AmirNet_DO': # 1,875,666 parameters
         model = AmirNet_DO(num_classes=args.num_classes)
+        if args.input_size != 128:
+            raise ValueError('AmirNet only accepts images of size 128 x 128!')
         print("AmirNet_DO has been loaded with dropout.")
 
     elif args.arch == 'AmirNet_CDO': # 1,875,672 parameters
         model = AmirNet_CDO(num_classes=args.num_classes)
+        if args.input_size != 128:
+            raise ValueError('AmirNet only accepts images of size 128 x 128!')
         print("AmirNet_CDO has been loaded with concrete dropout.")
 
     elif args.arch == 'AmirNet_VDO': # 1,875,672 parameters
         model = AmirNet_VDO(num_classes=args.num_classes)
+        if args.input_size != 128:
+            raise ValueError('AmirNet only accepts images of size 128 x 128!')
         print("AmirNet_VDO has been loaded with variational dropout.")
 
     else:

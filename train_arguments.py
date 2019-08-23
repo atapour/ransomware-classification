@@ -30,7 +30,7 @@ class Arguments():
         parser.add_argument('--print_freq', default=2, type=int, help='how many steps before printing the loss values to the standard output for inspection purposes only.')
         parser.add_argument('--display_winsize', type=int, default=256, help='display window size for visdom.')
         parser.add_argument('--display_freq', type=int, default=10, help='frequency of showing training results on screen using visdom.')
-        parser.add_argument('--display_ncols', type=int, default=3, help='if positive, display all images in a single visdom web panel with certain number of images per row.')
+        parser.add_argument('--display_ncols', type=int, default=0, help='if positive, display all images in a single visdom web panel with certain number of images per row.')
         parser.add_argument('--display_id', type=int, default=1, help='window id of the web display.')
         parser.add_argument('--display_server', type=str, default="http://localhost", help='visdom server of the web display.')
         parser.add_argument('--display_env', type=str, default='main', help='visdom display environment name (default is "main").')

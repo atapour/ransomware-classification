@@ -21,8 +21,8 @@ from torchvision import datasets
 class AddNoise(object):
 
     def __call__(self, x):
-        l1 = 0.00001
-        l2 = 0.2
+        l1 = 0.000001
+        l2 = 0.002
         level = random.uniform(l1, l2)
         noise = torch.randn(*(x.size())) * level
 
@@ -33,7 +33,7 @@ class AddNoise(object):
 # simulates defocus blur. Taken from https://github.com/lospooky/pyblur/blob/master/pyblur/DefocusBlur.py
 class AddDefocusBlur(object):
     def __init__(self):
-        self.defocusKernelDims = [3, 5, 7, 9, 11]
+        self.defocusKernelDims = [3, 5, 7, 9]
         self.coin = 0.3
 
     def __call__(self, x):
@@ -92,7 +92,7 @@ class AddDefocusBlur(object):
 # simulate motion blur. Take from https://github.com/lospooky/pyblur/blob/master/pyblur/LinearMotionBlur.py
 class AddMotionBlur(object):
     def __init__(self):
-        self.lineLengths = [3,5,7,9]
+        self.lineLengths = [3, 5, 7]
         self.lineTypes = ["full", "right", "left"]
         self.lineDict = LineDictionary()
         self.coin = 0.3
@@ -180,10 +180,10 @@ class AddBlur(object):
 
     def __call__(self, x):
 
-        coin_1 = 0.2
-        coin_2 = 0.4
+        coin_1 = 0.1
+        coin_2 = 0.3
 
-        radius = 5
+        radius = 3
 
         if random.random() < coin_1:
             return x.filter(PIL.ImageFilter.BoxBlur(radius=random.randint(0, radius)))
@@ -243,7 +243,7 @@ class ChangeBrightness(object):
 
     def __call__(self, x):
         l1 = 0
-        l2 = 3
+        l2 = 2
         level = random.uniform(l1, l2)
         enhancer = PIL.ImageEnhance.Brightness(x)
         return enhancer.enhance(level)

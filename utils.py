@@ -52,58 +52,18 @@ class Display():
         if self.display_id > 0:  # show images in the browser
             ncols = self.ncols
             if ncols > 0:
-                # ncols = min(ncols, len(visuals))
-
-                # label_html = ''
-                # label_html_row = ''
-
-                # idx = 0
-
-                # for label, image in visuals.items():
-                image = visuals
-                print(image.shape)
-                label = 'hey'
-                # label = visuals['out']
-
-                # image = image[0]
-
-                
-
-                # image_numpy = return_numpy_array(image)
-
-                # print(image_numpy.shape)
-
-                # # label_html_row += '<td>%s</td>' % label
-                # # images.append(image_numpy.transpose([2, 0, 1]))
-                # # labels.append(str(label.item()) + ' ')
-                # idx += 1
-                # if idx % ncols == 0:
-                #     label_html += '<tr>%s</tr>' % label_html_row
-                #     label_html_row = ''
-
-                # white_image = np.ones_like(image_numpy.transpose([2, 0, 1])) * 255
-                # while idx % ncols != 0:
-                #     # images.append(white_image)
-                #     label_html_row += '<td></td>'
-                #     idx += 1
-                # if label_html_row != '':
-                #     label_html += '<tr>%s</tr>' % label_html_row
+                label = 'Results'
 
                 try:
-                    # self.vis.images(images, nrow=ncols, win=self.display_id + 1,
-                    #                 padding=2, opts=dict(title=''.join(labels)))
-                    self.vis.image(image, opts=dict(caption=str(label), store_history=False))
-                    # self.vis.image(image)
+                    self.vis.image(visuals, opts=dict(caption=str(label), store_history=False))
                 except VisdomExceptionBase:
                     self.throw_visdom_connection_error()
 
             else:
                 idx = 1
-                image = visuals
-                # label = visuals['out']
+                label = 'Results'
 
-                image_numpy = return_numpy_array(image)
-                self.vis.image(image_numpy.transpose([2, 0, 1]), opts=dict(title=label), win=self.display_id + idx)
+                self.vis.image(visuals, opts=dict(title=label), win=self.display_id + idx)
                 idx += 1
 
     # losses: dictionary of error labels and values
@@ -119,10 +79,10 @@ class Display():
                 X=np.stack([np.array(self.plot_data['X'])] * len(self.plot_data['legend']), 1),
                 Y=np.array(self.plot_data['Y']),
                 opts={
-                    'title': self.name + ' loss over time',
+                    'title': self.name + ' -- loss over time',
                     'legend': self.plot_data['legend'],
                     'xlabel': 'step',
-                    'ylabel': 'loss'},
+                    'ylabel': 'training loss'},
                 win=self.display_id)
 
         except VisdomExceptionBase:
@@ -170,52 +130,8 @@ def multiclass_roc_auc_score(gt, pred, average="macro"):
     return metrics.roc_auc_score(gt, pred, average=average)
 #-----------------------------------------
 
-#-----------------------------------------
-# plots a confusion matrix
-def plot_confusion_matrix(gt, pred, classes, normalize=False, title='Confusion Matrix', cmap=plt.cm.Blues):
-
-    cm = metrics.confusion_matrix(gt, pred)
-    np.set_printoptions(precision=2)
-
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
-
-    print(cm)
-
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
-    tick_marks = np.arange(len(classes))
-
-    plt.xticks(tick_marks, fontsize=3)
-    plt.yticks(tick_marks, fontsize=3)
-
-    plt.grid(True)
-
-    plt.ylabel('Ground Truth')
-    plt.xlabel('Predictions')
-    plt.tight_layout()
-    plt.show()
-#-----------------------------------------
-
 # this function is used to make a directory if it does not already exist
 def mkdir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-# this function return a numpy array when given an image. For the network output images (one channel images) colourization to black and white is performed here.
-def return_numpy_array(img, imtype=np.uint8):
-
-    if not isinstance(img, torch.Tensor):
-        return img
-
-    image_numpy = img.cpu().float().numpy()
-
-    if image_numpy.shape[0] == 1:
-        image_numpy = np.tile(image_numpy, (3, 1, 1))
-
-    image_numpy = (np.transpose(image_numpy, (1, 2, 0))) * 255.0
-    return image_numpy.astype(imtype)

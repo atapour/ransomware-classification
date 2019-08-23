@@ -1,11 +1,8 @@
 
 *.pth
-experiments
+checkpoints
+pretrained_weights
 __pycache__
-mnist-data
-imgs/
-temp_stuff
 .DS_Store
-Data
 *.out
 .vscode

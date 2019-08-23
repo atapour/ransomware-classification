@@ -38,7 +38,7 @@ while global_step < args.num_steps:
         model.optimize(args)
 
         if global_step % args.display_freq == 0:
-            display.display_current_results(model.get_train_images())
+            display.display_current_results(model.get_train_images(global_step))
 
         if global_step % args.print_freq == 0:
             loss = model.get_loss()

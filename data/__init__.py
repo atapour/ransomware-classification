@@ -12,12 +12,6 @@ from data.augs import (AddBlur, AddDefocusBlur, AddMotionBlur, AddNoise,
                        RandomPerspective)
 
 
-def my_collate(batch):
-    batch = list(filter(lambda x: x is not None, batch))
-    return torch.utils.data.dataloader.default_collate(batch)
-#-----------------------------------------
-
-
 # this function returns the transforms applied to the images
 def get_transforms(args):
 

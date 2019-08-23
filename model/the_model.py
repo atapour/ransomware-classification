@@ -52,6 +52,9 @@ class TheModel():
                 if hasattr(state_dict, '_metadata'):
                     del state_dict._metadata
 
+                if 'state_dict' in state_dict.keys():
+                    state_dict = state_dict['state_dict']
+
                 self.net.load_state_dict(state_dict)
 
             else:
@@ -99,6 +102,8 @@ class TheModel():
     # optimize the model parameters
     def optimize(self, args):
 
+        self.net.train()
+
         self.forward()
         self.optimizer.zero_grad()
         self.backward(args)
@@ -106,6 +111,8 @@ class TheModel():
 
     # this function is only used during inference
     def test(self):
+
+        self.net.eval()
 
         self.forward()
 
@@ -131,6 +138,9 @@ class TheModel():
         if hasattr(state_dict, '_metadata'):
             del state_dict._metadata
 
+        if 'state_dict' in state_dict.keys():
+            state_dict = state_dict['state_dict']
+
         self.net.load_state_dict(state_dict)
 
     # this function prints the network information
@@ -154,27 +164,37 @@ class TheModel():
         return self.loss
 
     # this function returns the image and the labels involved in the training for saving and displaying
-    def get_train_images(self):
+    def get_train_images(self, step):
 
         t = ToTensor()
 
         _, output = torch.max(self.out, dim=1)
 
         image = self.image[0]
-        gt_txt = 'GT: ' + self.classes[self.gt[0]]
+        gt_txt = f'Step: {step} - {self.classes[self.gt[0]]}'
         output_txt = 'Pred: ' + self.classes[output[0]]
+
+
+        delta_w = 500 - image.shape[1]
+        delta_h = 0
+        top, bottom = delta_h // 2, delta_h - (delta_h//2)
+        left, right = delta_w // 2, delta_w - (delta_w//2)
+
+        image = np.transpose(image.cpu().numpy(), (1, 2, 0))    
+
+        image_padded = cv2.copyMakeBorder(image * 255, top, bottom, left, right, cv2.BORDER_CONSTANT, value=(255, 255, 255))
 
         gt_colour = (0, 0, 0)
 
         if self.gt[0] == output[0]:
-            output_colour = (255, 0, 0)
+            output_colour = (0, 255, 0)
         else:
-            output_colour = (0, 0, 255)
+            output_colour = (255, 0, 0)
 
         font = cv2.FONT_HERSHEY_SIMPLEX
 
-        height = 200
-        width = 200
+        height = 40
+        width = 500
 
         gt_img = np.ones((height, width, 3), np.uint8) * 255
         output_img = np.ones((height, width, 3), np.uint8) * 255
@@ -193,27 +213,18 @@ class TheModel():
         cv2.putText(gt_img, gt_txt, (textX_gt, textY_gt), font, 1, gt_colour, 2)
         cv2.putText(output_img, output_txt, (textX_output, textY_output), font, 1, output_colour, 2)
 
-        labelled_image = np.stack((gt_img, output_img), axis=1)
+        labelled_image = np.concatenate((image_padded, gt_img, output_img), axis=0)
 
-        print(labelled_image.shape)
-
-
-
-
-
-        output_img = cv2.cvtColor(output_img, cv2.COLOR_BGR2RGB)
-        output_img = Image.fromarray(output_img)
-
-        return t(output_img)
-        # return image
+        return t(labelled_image)
 
     # this function returns the output image and the RGB image during testing
     def get_test_outputs(self):
 
-        im_ret = OrderedDict()
-        im_ret['image'] = self.image
+        ret = OrderedDict()
+        ret['image'] = self.image
+        ret['gt'] = self.gt
 
         _, output = torch.max(self.out, dim=1)
-        im_ret['out'] = self.classes[output]
+        ret['out'] = output
 
-        return im_ret
+        return ret
