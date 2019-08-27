@@ -4,7 +4,7 @@ Requires an NVIDIA GPU, Python 3, [CUDA CuDNN](https://developer.nvidia.com/cudn
 <br>
 Other libraries such as [visdom](https://github.com/facebookresearch/visdom) and [colorama](https://pypi.org/project/colorama/) are also optionally used in the code.
 
-![General Pipeline](https://github.com/atapour/depth-hole-prediction/blob/master/imgs/architecture.png)
+![General Pipeline](https://github.com/atapour/ransomware-classification/blob/master/imgs/architecture.png)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -41,7 +41,7 @@ $ ./download_data.sh
 ```
 ---
 
-![](https://github.com/atapour/depth-hole-prediction/blob/master/imgs/data.png)
+![](https://github.com/atapour/ransomware-classification/blob/master/imgs/data.png)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -53,7 +53,7 @@ $ ./download_data.sh
 * To train the model, run the following command:
 
 ```
-$ python train.py <experiment_name> --data_root=./data --aug rotate contrast brightness occlusion regularblur defocusblur motionblur perspective gray colorjitter noise --input_size=256 --arch=inception
+$ python train.py <experiment_name> --data_root=./dataset/train --aug rotate contrast brightness occlusion regularblur defocusblur motionblur perspective gray colorjitter noise --input_size=256 --arch=inception
 ```
 
 * All the arguments for the training are passed from the file `train_arguments.py`. Refer to that file for further information.
@@ -66,7 +66,7 @@ $ python train.py <experiment_name> --data_root=./data --aug rotate contrast bri
 * To test the approach based on a [densenet201](https://arxiv.org/abs/1608.06993) architecture, pre-trained on [ImageNet](http://www.image-net.org/) and the full augmentation protocol, run the following command:
 
 ```
-$ python test.py --test_checkpoint_path=./pretrained_weights/densenet201.pth --input_size=256 --pretrained --arch=densenet201
+$ python test.py --pos_root=./dataset/positive --test_checkpoint_path=./pretrained_weights/densenet201.pth --input_size=256 --pretrained --arch=densenet201
 
 ```
 ---
@@ -74,7 +74,7 @@ $ python test.py --test_checkpoint_path=./pretrained_weights/densenet201.pth --i
 * To test the uncertainty estimation capabilities of the approach using our custom architecture based on [Bayesian approximation](https://arxiv.org/pdf/1506.02142.pdf) employing Monte Carlo drop-out, run the following command:
 
 ```
-$ python uncertainty.py --test_checkpoint_path=./pretrained_weights/AmirNet_DO.pth --input_size=128 --arch=AmirNet_DO
+$ python uncertainty.py --pos_root=./dataset/negative --test_checkpoint_path=./pretrained_weights/AmirNet_DO.pth --input_size=128 --arch=AmirNet_DO
 
 ```
 

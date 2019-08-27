@@ -42,7 +42,7 @@ nl = '\n'
 print(f'{blue}There are a total number of {red}{len(pos_loader)}{blue} images in the positive test data set and {red}{len(neg_loader)}{blue} images in the negative test data set.{reset}{nl}')
 
 if args.arch != 'AmirNet_DO' and args.arch != 'AmirNet_CDO' and args.arch != 'AmirNet_VDO':
-        raise ValueError('The nework you have selected cannot be used to obtain uncertainity.')
+        raise ValueError('The network you have selected cannot be used to obtain uncertainty.')
 
 
 model = create_model(args, None, pos_loader.dataset.classes)
@@ -93,7 +93,7 @@ accuracy /= len(pos_loader)
 f1 = calculate_f1_score(gts, preds)
 auc = multiclass_roc_auc_score(gts, preds)
 
-print('Positive test data processesing completed.')
+print('Positive test data processing completed.')
 print(f'Accuracy: {green}{accuracy:.4f}{reset} -- F1 Score: {green}{f1:.4f}{reset} -- AUC: {green}{auc:.4f}{reset} -- {red}Uncertainty: {np.mean(uncertainty_list)}{reset}')
 
 print(f'{nl}{red}Processing the negative test images has begun..{reset}{nl}')
@@ -125,5 +125,5 @@ with torch.no_grad():
                 uncertainty_list.append(uncertainty)
                 confidence_list.append(confidence)
 
-print('Negative test data processesing completed.')
+print('Negative test data processing completed.')
 print(f'{red}Uncertainty: {np.mean(uncertainty_list)}{reset}')
