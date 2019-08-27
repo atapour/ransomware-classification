@@ -11,7 +11,7 @@ class Arguments():
     def initialize(self, parser):
 
         parser.add_argument('--phase', default='test', type=str, choices=['train', 'test'], help='determining whether the model is being trained or used for inference. Since this is the test_arguments file, this needs to be test!!')
-        parser.add_argument('--test_checkpoint_path', type=str, default='./pretrained_weights/hole_predictor.pth', help='during inference, the path to checkpoint is needed.')
+        parser.add_argument('--test_checkpoint_path', type=str, default='./pretrained_weights/AmirNet_DO.pth', help='during inference, the path to checkpoint is needed.')
         parser.add_argument('--results_path', type=str, default='./results', help='during inference, the path to save the results. The directory is not created and must already be there.')
         parser.add_argument('--pos_root', default='../../Data/ransom_ware/test', type=str, help='path to the positive test data directory to test the accuracy of the model.')
         parser.add_argument('--neg_root', default='../../Data/ransom_ware/negative', type=str, help='path to the negative test data directory to evaluate model uncertainty.')

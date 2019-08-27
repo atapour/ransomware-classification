@@ -1,7 +1,5 @@
 
-*.pth
 checkpoints
-pretrained_weights
 __pycache__
 .DS_Store
 *.out

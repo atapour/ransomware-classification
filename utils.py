@@ -4,6 +4,7 @@ import os
 import random
 import sys
 import time
+import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -22,6 +23,7 @@ if sys.version_info[0] == 2:
 else:
     VisdomExceptionBase = ConnectionError
 
+warnings.filterwarnings('ignore')
 
 class Display():
     def __init__(self, args):
@@ -134,4 +136,3 @@ def multiclass_roc_auc_score(gt, pred, average="macro"):
 def mkdir(path):
     if not os.path.exists(path):
         os.makedirs(path)
-

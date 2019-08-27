@@ -1,12 +1,15 @@
 import colorama
+import numpy as np
 import torch
 import torch.nn.functional as F
+import torchvision.datasets as datasets
+from torchvision.transforms import (CenterCrop, Compose, Normalize, Resize,
+                                    ToTensor)
+
 from data import create_loader
 from model import create_model
 from test_arguments import Arguments
 from utils import calculate_f1_score, multiclass_roc_auc_score
-from torchvision.transforms import Compose, ToTensor, CenterCrop, Normalize, Resize
-import torchvision.datasets as datasets
 
 # setting up the colors:
 reset = colorama.Style.RESET_ALL
@@ -16,7 +19,6 @@ green = colorama.Fore.GREEN
 
 #-----------------------------------------
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-warnings.filterwarnings('ignore')
 #-----------------------------------------
 
 args = Arguments().parse()
@@ -28,7 +30,7 @@ if args.pretrained:
 else:
     transforms = Compose([Resize(args.input_size), CenterCrop(args.input_size), ToTensor()])
 
-pos_dataset = datasets.ImageFolder(args.eval_root)
+pos_dataset = datasets.ImageFolder(args.pos_root)
 pos_dataset.transform = transforms
 pos_loader = torch.utils.data.DataLoader(pos_dataset, batch_size=1, num_workers=4, shuffle=False, drop_last=False)
 
@@ -65,7 +67,7 @@ with torch.no_grad():
                 image = image.to(device)
                 gt = gt.to(device)
 
-                model.train()
+                network.train()
 
                 out_list = []
 
@@ -92,7 +94,7 @@ f1 = calculate_f1_score(gts, preds)
 auc = multiclass_roc_auc_score(gts, preds)
 
 print('Positive test data processesing completed.')
-print(f'Accuracy: {green}{accuracy:.4f}{reset} -- F1 Score: {green}{f1:.4f}{reset} -- AUC: {green}{auc:.4f}{reset} -- {red}Uncertainty: {uncertainty_list.mean(){reset}}')
+print(f'Accuracy: {green}{accuracy:.4f}{reset} -- F1 Score: {green}{f1:.4f}{reset} -- AUC: {green}{auc:.4f}{reset} -- {red}Uncertainty: {np.mean(uncertainty_list)}{reset}')
 
 print(f'{nl}{red}Processing the negative test images has begun..{reset}{nl}')
 
@@ -105,7 +107,7 @@ with torch.no_grad():
                 image, _ = data
                 image = image.to(device)
 
-                model.train()
+                network.train()
 
                 out_list = []
 
@@ -118,10 +120,10 @@ with torch.no_grad():
                 predicted = output_mean.cpu().numpy().argmax()
                 # uncertainty value for the predicted label, which is obviously wrong
                 # uncertainty can also be calcualted for the entire output (not just the predicted class), but we empirically find this uncertainty to be a cleaner indication of uncertainty.
-                uncertainty = float(torch.cat(out_list, 0)[:, :, predicted].var(0).cpu().numpy()) # Num classes X 1
+                uncertainty = float(torch.cat(out_list, 0)[:, :, predicted].var(0).cpu().numpy()*10) # Num classes X 1
 
                 uncertainty_list.append(uncertainty)
                 confidence_list.append(confidence)
 
 print('Negative test data processesing completed.')
-print(f'{red}Uncertainty: {uncertainty_list.mean(){reset}}')
+print(f'{red}Uncertainty: {np.mean(uncertainty_list)}{reset}')
