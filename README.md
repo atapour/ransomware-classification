@@ -74,7 +74,7 @@ $ python test.py --pos_root=./dataset/positive --test_checkpoint_path=./pretrain
 * To test the uncertainty estimation capabilities of the approach using our custom architecture based on [Bayesian approximation](https://arxiv.org/pdf/1506.02142.pdf) employing Monte Carlo drop-out, run the following command:
 
 ```
-$ python uncertainty.py --pos_root=./dataset/negative --test_checkpoint_path=./pretrained_weights/AmirNet_DO.pth --input_size=128 --arch=AmirNet_DO
+$ python uncertainty.py --pos_root=./dataset/positive --neg_root=./dataset/negative --test_checkpoint_path=./pretrained_weights/AmirNet_DO.pth --input_size=128 --arch=AmirNet_DO
 
 ```
 

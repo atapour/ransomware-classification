@@ -37,9 +37,6 @@ class TheModel():
             else:
                 self.optimizer = torch.optim.Adam(self.net.parameters(), lr=args.lr, weight_decay=args.weight_decay, amsgrad=True)
 
-        elif self.phase == 'test':
-            self.results_path = args.results_path
-
     # this function sets up the model by loading and printing the model if necessary
     def set_up(self, args):
 

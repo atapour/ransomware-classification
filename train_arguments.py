@@ -27,15 +27,15 @@ class Arguments():
         parser.add_argument('--resume', action='store_true', help='resume from a checkpoint')
         parser.add_argument('--which_checkpoint', type=str, default='latest', help='the checkpoint to be loaded to resume training. Checkpoints are identified and saved by the number of steps passed during training.')
         parser.add_argument('--checkpoints_dir', type=str, default='checkpoints', help='the path to where the model is saved.')
-        parser.add_argument('--print_freq', default=2, type=int, help='how many steps before printing the loss values to the standard output for inspection purposes only.')
+        parser.add_argument('--print_freq', default=50, type=int, help='how many steps before printing the loss values to the standard output for inspection purposes only.')
         parser.add_argument('--display_winsize', type=int, default=256, help='display window size for visdom.')
-        parser.add_argument('--display_freq', type=int, default=10, help='frequency of showing training results on screen using visdom.')
+        parser.add_argument('--display_freq', type=int, default=50, help='frequency of showing training results on screen using visdom.')
         parser.add_argument('--display_ncols', type=int, default=0, help='if positive, display all images in a single visdom web panel with certain number of images per row.')
         parser.add_argument('--display_id', type=int, default=1, help='window id of the web display.')
         parser.add_argument('--display_server', type=str, default="http://localhost", help='visdom server of the web display.')
         parser.add_argument('--display_env', type=str, default='main', help='visdom display environment name (default is "main").')
         parser.add_argument('--display_port', type=int, default=8097, help='visdom port of the web display.')
-        parser.add_argument('--save_checkpoint_freq', default=1000, type=int, help='how many steps before saving one sequence of images to disk for inspection purposes only.')
+        parser.add_argument('--save_checkpoint_freq', default=5000, type=int, help='how many steps before saving one sequence of images to disk for inspection purposes only.')
 
         self.initialized = True
 
