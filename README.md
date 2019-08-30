@@ -66,7 +66,7 @@ $ python train.py <experiment_name> --data_root=./dataset/train --aug rotate con
 * To test the approach based on a [densenet201](https://arxiv.org/abs/1608.06993) architecture, pre-trained on [ImageNet](http://www.image-net.org/) and the full augmentation protocol, run the following command:
 
 ```
-$ python test.py --pos_root=./dataset/positive --test_checkpoint_path=./pretrained_weights/densenet201.pth --input_size=256 --pretrained --arch=densenet201
+$ python test.py --pos_root=./dataset/test --test_checkpoint_path=./pretrained_weights/densenet201.pth --input_size=256 --pretrained --arch=densenet201
 
 ```
 ---
@@ -74,13 +74,13 @@ $ python test.py --pos_root=./dataset/positive --test_checkpoint_path=./pretrain
 * To test the uncertainty estimation capabilities of the approach using our custom architecture based on [Bayesian approximation](https://arxiv.org/pdf/1506.02142.pdf) employing Monte Carlo drop-out, run the following command:
 
 ```
-$ python uncertainty.py --pos_root=./dataset/positive --neg_root=./dataset/negative --test_checkpoint_path=./pretrained_weights/AmirNet_DO.pth --input_size=128 --arch=AmirNet_DO
+$ python uncertainty.py --pos_root=./dataset/test --neg_root=./dataset/negative --test_checkpoint_path=./pretrained_weights/AmirNet_DO.pth --input_size=128 --arch=AmirNet_DO
 
 ```
 
 ---
 
-This work is created as part of the project published in the following. The released weights of the models have been re-trained.
+This work is created as part of the project published in the following:
 ## Reference:
 
 [A King's Ransom for Encryption: Ransomware Classification using AugmentedOne-Shot Learning and Bayesian Approximation](https://arxiv.org/pdf/1908.06750.pdf)

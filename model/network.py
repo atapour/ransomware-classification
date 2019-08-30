@@ -8,9 +8,8 @@ from torchvision import datasets, models
 
 
 # --------------------------------------------------
-# load a model based on the arch in the args
 def load_model(args):
-    """Load a given model specified in the arguments and return it"""
+    """Load a given model specified in the arguments (--arch) and return it"""
 
     if args.arch == 'inception': # 25,214,714 parameters
         model = models.inception_v3(pretrained=args.pretrained, num_classes=1000, aux_logits=True)
@@ -262,10 +261,13 @@ class VariationalDropout(nn.Module):
 # --------------------------------------------------
 
 # --------------------------------------------------
-class AmirNet(nn.Module): # 1,875,666 parameters
+class AmirNet(nn.Module):
+    """
+    A class used to represent a simple custom architecture for classification. This model contains 1,875,666 parameters.
+    This architecture will only accept images of size 128 x 128, and is made up of six convolutional layers, three max-pooling operations and a linear layer.
+    """
     def __init__(self, num_classes=50):
         super(AmirNet, self).__init__()
-        # it is assumed that the input will be 128 x 128
 
         self.conv_1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1)
         self.conv_2 = nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
@@ -279,37 +281,29 @@ class AmirNet(nn.Module): # 1,875,666 parameters
         self.relu = nn.LeakyReLU(0.2)
 
     def forward(self, x):
-        # here: size(x): 128 x 128
+
         x = self.relu(self.conv_1(x))
-        # here: size(x): 128 x 128
         x = self.relu(self.conv_2(x))
-        # here: size(x): 128 x 128
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 64 x 64
         x = self.relu(self.conv_3(x))
-        # here: size(x): 64 x 64
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 32 x 32
         x = self.relu(self.conv_4(x))
-        # here: size(x): 32 x 32
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 16 x 16
         x = self.relu(self.conv_5(x))
-        # here: size(x): 8 x 8
         x = self.relu(self.conv_6(x))
-        # here: size(x): 4 x 4
         x = x.view(-1, 4*4*256)
-        # here: size(x): flattened 8*8*128
         x = self.fc_1(x)
-        # here: size(x): flattened - num_classes
         return x
 # --------------------------------------------------
 
 # --------------------------------------------------
 class AmirNet_DO(nn.Module): # 1,875,666 parameters
+    """
+    A class used to represent a simple custom architecture for classification. The architecture contains a dropout module after each weight layer to enable Monte Carlo sampling for Bayesian approximation. This model contains 1,875,666 parameters.
+    This architecture will only accept images of size 128 x 128, and is made up of six convolutional layers, three max-pooling operations and a linear layer.
+    """
     def __init__(self, num_classes=50, dropout_level=0.05):
         super(AmirNet_DO, self).__init__()
-        # it is assumed that the input will be 128 x 128
 
         self.dropout_level = dropout_level
 
@@ -325,49 +319,35 @@ class AmirNet_DO(nn.Module): # 1,875,666 parameters
         self.relu = nn.LeakyReLU(0.2)
 
     def forward(self, x):
-        # here: size(x): 128 x 128
+
         x = self.relu(self.conv_1(x))
-        # here: size(x): 128 x 128
         x = F.dropout(x, p=self.dropout_level, training=True)
-        # here: size(x): 128 x 128
         x = self.relu(self.conv_2(x))
-        # here: size(x): 128 x 128
         x = F.dropout(x, p=self.dropout_level, training=True)
-        # here: size(x): 128 x 128
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 64 x 64
         x = self.relu(self.conv_3(x))
-        # here: size(x): 64 x 64
         x = F.dropout(x, p=self.dropout_level, training=True)
-        # here: size(x): 64 x 64
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 32 x 32
         x = self.relu(self.conv_4(x))
-        # here: size(x): 32 x 32
         x = F.dropout(x, p=self.dropout_level, training=True)
-        # here: size(x): 32 x 32
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 16 x 16
         x = self.relu(self.conv_5(x))
-        # here: size(x): 8 x 8
         x = F.dropout(x, p=self.dropout_level, training=True)
-        # here: size(x): 8 x 8
         x = self.relu(self.conv_6(x))
-        # here: size(x): 4 x 4
         x = F.dropout(x, p=self.dropout_level, training=True)
-        # here: size(x): 4 x 4
         x = x.view(-1, 4*4*256)
-        # here: size(x): flattened 4*4*128
         x = self.fc_1(x)
-        # here: size(x): flattened - num_classes
         return x
 # --------------------------------------------------
 
 # --------------------------------------------------
 class AmirNet_CDO(nn.Module): # 1,875,672 parameters
+    """
+    A class used to represent a simple custom architecture for classification. The architecture contains the concrete dropout module (https://arxiv.org/abs/1705.07832) after each weight layer to enable Monte Carlo sampling for Bayesian approximation. This model contains 1,875,672 parameters.
+    This architecture will only accept images of size 128 x 128, and is made up of six convolutional layers, three max-pooling operations and a linear layer.
+    """
     def __init__(self, num_classes=50, weight_reg_coef=5e-4, dropout_reg_coef=1e-2):
         super(AmirNet_CDO, self).__init__()
-        # it is assumed that the input will be 128 x 128
 
         self.weight_reg_coef = weight_reg_coef
         self.dropout_reg_coef = dropout_reg_coef
@@ -391,46 +371,27 @@ class AmirNet_CDO(nn.Module): # 1,875,672 parameters
         self.cdo_6 = ConcreteDropout()
 
     def forward(self, x):
-        # here: size(x): 128 x 128
         x = self.relu(self.conv_1(x))
-        # here: size(x): 128 x 128
         x = self.cdo_1(x)
-        # here: size(x): 128 x 128
         x = self.relu(self.conv_2(x))
-        # here: size(x): 128 x 128
         x = self.cdo_2(x)
-        # here: size(x): 128 x 128
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 64 x 64
         x = self.relu(self.conv_3(x))
-        # here: size(x): 64 x 64
         x = self.cdo_3(x)
-        # here: size(x): 64 x 64
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 32 x 32
         x = self.relu(self.conv_4(x))
-        # here: size(x): 32 x 32
         x = self.cdo_4(x)
-        # here: size(x): 32 x 32
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 16 x 16
         x = self.relu(self.conv_5(x))
-        # here: size(x): 8 x 8
         x = self.cdo_5(x)
-        # here: size(x): 8 x 8
         x = self.relu(self.conv_6(x))
-        # here: size(x): 4 x 4
         x = self.cdo_6(x)
-        # here: size(x): 4 x 4
         x = x.view(-1, 4*4*256)
-        # here: size(x): flattened 4*4*128
         x = self.fc_1(x)
-        # here: size(x): flattened - num_classes
         return x
 
     def entropy(self, cdo):
         return -cdo.p * torch.log(cdo.p + 1e-8) - (1 - cdo.p) * torch.log(1 - cdo.p + 1e-8)
-        # return cdo.p * torch.log(cdo.p) + (1 - cdo.p) * torch.log(1 - cdo.p)
 
     def regularisation(self):
         weight_reg =  (self.fc_1.weight.norm()**2 + self.fc_1.bias.norm()**2) \
@@ -447,24 +408,19 @@ class AmirNet_CDO(nn.Module): # 1,875,672 parameters
         # according to https://github.com/sungyubkim/MCDO/blob/master/Concrete_dropout_and_Variational_dropout.ipynb
         dropout_reg = self.entropy(self.cdo_1) + self.entropy(self.cdo_2) + self.entropy(self.cdo_3) + self.entropy(self.cdo_4) + self.entropy(self.cdo_5) + self.entropy(self.cdo_6)
 
-        # like the above but multiplied accoriding to https://github.com/yaringal/ConcreteDropout/blob/master/spatial-concrete-dropout-keras.ipynb
-        # dropout_reg =    self.entropy(self.cdo_1) * np.prod(self.conv_1.weight.shape[1:]) \
-        #                 + self.entropy(self.cdo_2) * np.prod(self.conv_2.weight.shape[1:]) \
-        #                 + self.entropy(self.cdo_3) * np.prod(self.conv_3.weight.shape[1:]) \
-        #                 + self.entropy(self.cdo_4) * np.prod(self.conv_4.weight.shape[1:]) \
-        #                 + self.entropy(self.cdo_5) * np.prod(self.conv_5.weight.shape[1:]) \
-        #                 + self.entropy(self.cdo_6) * np.prod(self.fc_1.weight.shape[1:])
-
         dropout_reg *= self.dropout_reg_coef
 
         return weight_reg + dropout_reg
 # --------------------------------------------------
 
 # --------------------------------------------------
-class AmirNet_VDO(nn.Module): # 1,875,672 parameters
+class AmirNet_VDO(nn.Module):
+    """
+    A class used to represent a simple custom architecture for classification. The architecture contains the variational dropout module (https://arxiv.org/abs/1506.02557) after each weight layer to enable Monte Carlo sampling for Bayesian approximation. This model contains 1,875,672 parameters.
+    This architecture will only accept images of size 128 x 128, and is made up of six convolutional layers, three max-pooling operations and a linear layer.
+    """
     def __init__(self, num_classes=50, reg_coef=5e-4):
         super(AmirNet_VDO, self).__init__()
-        # it is assumed that the input will be 128 x 128
 
         self.reg_coef = reg_coef
 
@@ -487,41 +443,23 @@ class AmirNet_VDO(nn.Module): # 1,875,672 parameters
         self.vdo_6 = VariationalDropout()
 
     def forward(self, x):
-        # here: size(x): 128 x 128
         x = self.relu(self.conv_1(x))
-        # here: size(x): 128 x 128
         x = self.vdo_1(x)
-        # here: size(x): 128 x 128
         x = self.relu(self.conv_2(x))
-        # here: size(x): 128 x 128
         x = self.vdo_2(x)
-        # here: size(x): 128 x 128
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 64 x 64
         x = self.relu(self.conv_3(x))
-        # here: size(x): 64 x 64
         x = self.vdo_3(x)
-        # here: size(x): 64 x 64
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 32 x 32
         x = self.relu(self.conv_4(x))
-        # here: size(x): 32 x 32
         x = self.vdo_4(x)
-        # here: size(x): 32 x 32
         x = F.max_pool2d(x, 2, 2)
-        # here: size(x): 16 x 16
         x = self.relu(self.conv_5(x))
-        # here: size(x): 8 x 8
         x = self.vdo_5(x)
-        # here: size(x): 8 x 8
         x = self.relu(self.conv_6(x))
-        # here: size(x): 4 x 4
         x = self.vdo_6(x)
-        # here: size(x): 4 x 4
         x = x.view(-1, 4*4*256)
-        # here: size(x): flattened 4*4*128
         x = self.fc_1(x)
-        # here: size(x): flattened - num_classes
         return x
 
     def kl(self, vdo):

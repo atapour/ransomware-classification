@@ -13,9 +13,24 @@ from model.network import load_model
 
 
 class TheModel():
+    """
+    This class used to represent our overall model
+    All the functionalities of the network with respect to both training and testing is implemented in this class.
+    """
 
-    # this initializes all requirements for the model
     def initialize(self, args, weights, classes):
+        """
+        Initialize all requirements for the model
+
+        Parameters
+        ----------
+        args : arguments class
+
+        weights: numpy array
+            weights used for balancing the classes during training
+        classes: list of strings
+            name of the classes in the dataset
+        """
 
         self.args = args
         self.phase = args.phase
@@ -37,8 +52,14 @@ class TheModel():
             else:
                 self.optimizer = torch.optim.Adam(self.net.parameters(), lr=args.lr, weight_decay=args.weight_decay, amsgrad=True)
 
-    # this function sets up the model by loading and printing the model if necessary
     def set_up(self, args):
+        """
+        Set up the model by loading and printing the model if necessary
+
+        Parameters
+        ----------
+        args : arguments class
+        """
 
         if self.phase == 'test':
             if args.test_checkpoint_path is not None:
