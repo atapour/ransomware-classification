@@ -1,6 +1,4 @@
-
-checkpoints
 __pycache__
 .DS_Store
-*.out
+*.zip
 .vscode
