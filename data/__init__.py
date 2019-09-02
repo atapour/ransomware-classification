@@ -12,8 +12,19 @@ from data.augs import (AddBlur, AddDefocusBlur, AddMotionBlur, AddNoise,
                        RandomPerspective)
 
 
-# this function returns the transforms applied to the images
 def get_transforms(args):
+    """
+    Compose and return the transforms needed for the augmentation process
+
+    Parameters
+    ----------
+    args: arguments class
+
+    Returns
+    ----------
+    transforms: the composed list of transforms
+
+    """
 
     input_size = args.input_size
 
@@ -68,8 +79,20 @@ def get_transforms(args):
         transforms = Compose(transform_list)
     return transforms
 
-# this function only creates the dataset from the aligned dataset class
 def create_dataset(args):
+    """
+    Create and return the dataset class
+
+    Parameters
+    ----------
+    args: arguments class
+
+    Returns
+    ----------
+    dataset: the dataset
+    weights: class weights needed for class balancing
+
+    """
 
     transforms = get_transforms(args)
 
@@ -88,8 +111,20 @@ def create_dataset(args):
 
     return dataset, weights
 
-# this function creates the dataloader
 def create_loader(args):
+    """
+    Create and return the dataloader
+
+    Parameters
+    ----------
+    args: arguments class
+
+    Returns
+    ----------
+    dataloader: the dataloader
+    weights: class weights needed for class balancing
+
+    """
 
     data_loader = DataLoader()
     data_loader.initialize(args)
@@ -99,6 +134,9 @@ def create_loader(args):
     return data_loader, data_loader.return_weights()
 
 class DataLoader():
+    """
+    A class used to create the dataloader 
+    """
 
     def initialize(self, args):
 

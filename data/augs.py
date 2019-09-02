@@ -16,9 +16,10 @@ from skimage.draw import circle, line
 from torchvision import datasets
 
 
-#-----------------------------------------
-# add noise to an image, already converted to a torch tensor
 class AddNoise(object):
+    """
+    A class used to add noise to the torch tensor containing the input image
+    """
 
     def __call__(self, x):
         l1 = 0.000001
@@ -27,11 +28,12 @@ class AddNoise(object):
         noise = torch.randn(*(x.size())) * level
 
         return x + noise
-#-----------------------------------------
 
-#-----------------------------------------
-# simulates defocus blur. Taken from https://github.com/lospooky/pyblur/blob/master/pyblur/DefocusBlur.py
+# based on https://github.com/lospooky/pyblur/blob/master/pyblur/DefocusBlur.py
 class AddDefocusBlur(object):
+    """
+    A class used to simulate defocus blur added to the input image before it is transformed into a torch tensor 
+    """
     def __init__(self):
         self.defocusKernelDims = [3, 5, 7, 9]
         self.coin = 0.3
@@ -86,11 +88,14 @@ class AddDefocusBlur(object):
         kernel[kernelwidth-1, kernelwidth-1] =0 
 
         return kernel
-#-----------------------------------------
 
-#-----------------------------------------
-# simulate motion blur. Take from https://github.com/lospooky/pyblur/blob/master/pyblur/LinearMotionBlur.py
+
+# based on https://github.com/lospooky/pyblur/blob/master/pyblur/LinearMotionBlur.py
 class AddMotionBlur(object):
+    """
+    A class used to simulate motion blur added to the input image before it is transformed into a torch tensor 
+    """
+
     def __init__(self):
         self.lineLengths = [3, 5, 7]
         self.lineTypes = ["full", "right", "left"]
@@ -172,11 +177,11 @@ class AddMotionBlur(object):
         angleIdx = random.randint(0, top_idx)
 
         return int(validLineAngles[angleIdx])
-#-----------------------------------------
 
-#-----------------------------------------
-# blur an image. Regular old box and gaussian blurs randomly selected
 class AddBlur(object):
+    """
+    A class used to add box and gaussian blur to the input image before it is transformed into a torch tensor 
+    """
 
     def __call__(self, x):
 
@@ -193,16 +198,16 @@ class AddBlur(object):
 
         else:
             return x
-#-----------------------------------------
 
-#-----------------------------------------
-# create an occlusion over the images, mainly to simulate glare
 class AddOcclusion(object):
+    """
+    A class used to add occlusion to the input image before it is transformed into a torch tensor 
+    """
+
     def __call__(self, x):
 
         make_colour = lambda : (random.randint(170, 255), random.randint(140, 230), random.randint(1, 80), random.randint(1, 255))
 
-        # coin = 0.4
         coin = 0.1
 
         if random.random() < coin:
@@ -220,11 +225,11 @@ class AddOcclusion(object):
             draw = ImageDraw.Draw(x)
             draw.ellipse((pos_h, pos_w, pos_h + radius_h, pos_w + radius_w), make_colour())
         return x
-#-----------------------------------------
 
-#-----------------------------------------
-# change contrast
 class ChangeContrast(object):
+    """
+    A class used to randomly change the contrast of the input image before it is transformed into a torch tensor 
+    """
 
     def __call__(self, x):
 
@@ -235,11 +240,11 @@ class ChangeContrast(object):
             return 128 + factor * (c - 128)
 
         return x.point(contrast)
-#-----------------------------------------
 
-#-----------------------------------------
-# change brightness
 class ChangeBrightness(object):
+    """
+    A class used to randomly change the brightness of the input image before it is transformed into a torch tensor 
+    """
 
     def __call__(self, x):
         l1 = 0
@@ -247,11 +252,11 @@ class ChangeBrightness(object):
         level = random.uniform(l1, l2)
         enhancer = PIL.ImageEnhance.Brightness(x)
         return enhancer.enhance(level)
-#-----------------------------------------
 
-#-----------------------------------------
-# randomly changes perspective. it is supposed to be in torchvision transforms but not what we have
 class RandomPerspective(object):
+    """
+    A class used to randomly change the perspective of the input image before it is transformed into a torch tensor 
+    """
 
     def __init__(self, distortion_scale=0.5, p=0.5, interpolation=Image.BICUBIC):
         self.p = p
@@ -305,11 +310,12 @@ class RandomPerspective(object):
         coeffs = self.get_perspective_coeffs(startpoints, endpoints)
 
         return img.transform(img.size, Image.PERSPECTIVE, coeffs, interpolation)
-#-----------------------------------------
 
-#-----------------------------------------
-# for the purposes of blurring. Taken from https://github.com/lospooky/pyblur/blob/master/pyblur/LineDictionary.py
+# based on https://github.com/lospooky/pyblur/blob/master/pyblur/LineDictionary.py
 class LineDictionary:
+    """
+    A class used to create lines to aid the defocus and motion blur classes
+    """
     def __init__(self):
         self.lines = {}
         self.Create3x3Lines()
@@ -377,4 +383,3 @@ class LineDictionary:
         lines[168.75] = [3,0,5,8]
         self.lines[9] = lines
         return
-#-----------------------------------------
