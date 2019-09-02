@@ -120,7 +120,7 @@ with torch.no_grad():
                 predicted = output_mean.cpu().numpy().argmax()
                 # uncertainty value for the predicted label, which is obviously wrong even if predicted with high confidence, as all the data are negative
                 # uncertainty can also be calculated for the entire output (not just the predicted class), but we empirically find this to be a cleaner indication of uncertainty.
-                uncertainty = float(torch.cat(out_list, 0)[:, :, predicted].var(0).cpu().numpy()*10) # Num classes X 1
+                uncertainty = float(torch.cat(out_list, 0)[:, :, predicted].var(0).cpu().numpy()) # Num classes X 1
 
                 uncertainty_list.append(uncertainty)
                 confidence_list.append(confidence)

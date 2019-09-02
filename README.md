@@ -61,7 +61,7 @@ $ python train.py <experiment_name> --data_root=./dataset/train --aug rotate con
 ---
 ## Instructions to test the model:
 
-* In order to easily test the model, we provide two sets of pre-trained weights `pretrained_weights/densenet201.pth` and `pretrained_weights/AmirNet_DO.pth`, with the former used to produce high accuracy classification results on the positive test set, and the latter used to evaluate model uncertainty estimates.
+* In order to easily test the model, we provide the pre-trained network weights in `pretrained_weights/densenet201.pth`, used to produce high accuracy classification results on the test set.
 
 * To test the approach based on a [densenet201](https://arxiv.org/abs/1608.06993) architecture, pre-trained on [ImageNet](http://www.image-net.org/) and the full augmentation protocol, run the following command:
 
@@ -71,10 +71,10 @@ $ python test.py --pos_root=./dataset/test --test_checkpoint_path=./pretrained_w
 ```
 ---
 
-* To test the uncertainty estimation capabilities of the approach using our custom architecture based on [Bayesian approximation](https://arxiv.org/pdf/1506.02142.pdf) employing Monte Carlo drop-out, run the following command:
+* To test the uncertainty estimation capabilities of the approach employing Monte Carlo drop-out, use the script in `uncertainty.py`.
 
 ```
-$ python uncertainty.py --pos_root=./dataset/test --neg_root=./dataset/negative --test_checkpoint_path=./pretrained_weights/AmirNet_DO.pth --input_size=128 --arch=AmirNet_DO
+$ python uncertainty.py --pos_root=./dataset/test --neg_root=./dataset/negative --test_checkpoint_path=path/to/checkpoint --input_size=128 --arch=AmirNet_DO
 
 ```
 
