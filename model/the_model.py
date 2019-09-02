@@ -94,21 +94,35 @@ class TheModel():
                 self.load_networks(step)
         self.print_networks()
 
-    # data inputs are assigned
     def assign_inputs(self, input):
+        """
+        Assign inputs used by the model
+
+        Parameters
+        ----------
+        input : the image and the ground truth label
+        """
 
         self.image, self.gt = input
 
         self.image = self.image.to(self.device)
         self.gt = self.gt.to(self.device)
 
-    # forward pass
     def forward(self):
+        """
+        Pass the image through the network
+        """
 
         self.out = self.net(self.image)
 
-    # backward pass with the loss
     def backward(self, args):
+        """
+        Take a backward pass and calculate the loss
+
+        Parameters
+        ----------
+        args : arguments class
+        """
 
         self.loss = self.criterion(self.out, self.gt)
 
@@ -119,6 +133,13 @@ class TheModel():
 
     # optimize the model parameters
     def optimize(self, args):
+        """
+        Take a step in the model optimisation process
+
+        Parameters
+        ----------
+        args : arguments class
+        """
 
         self.net.train()
 
@@ -127,15 +148,23 @@ class TheModel():
         self.backward(args)
         self.optimizer.step()
 
-    # this function is only used during inference
     def test(self):
+        """
+        Pass the image through the network for evaluation
+        """
 
         self.net.eval()
 
         self.forward()
 
-    # this function saves model checkpoints to disk
     def save_networks(self, step):
+        """
+        Save the network weights to disk
+
+        Parameters
+        ----------
+        step: the number of step at which the saving takes place
+        """
 
         save_filename = 'checkpoint_%s_steps.pth' % (step)
         save_path = os.path.join(self.checkpoint_save_dir, save_filename)
@@ -144,8 +173,14 @@ class TheModel():
 
         torch.save(self.net.state_dict(), save_path)
 
-    # this function loads model checkpoints from disk
     def load_networks(self, step):
+        """
+        Load the network weights from disk
+
+        Parameters
+        ----------
+        step: the number of step at which the network was previously saved
+        """
 
         load_filename = 'checkpoint_%s_steps.pth' % (step)
         load_path = os.path.join(self.checkpoint_save_dir, load_filename)
@@ -161,8 +196,10 @@ class TheModel():
 
         self.net.load_state_dict(state_dict)
 
-    # this function prints the network information
     def print_networks(self):
+        """
+        Print network details
+        """
 
         # setting up the pretty colors:
         reset = colorama.Style.RESET_ALL
@@ -176,13 +213,25 @@ class TheModel():
         print(f'{blue}There are a total number of {red}{num_params} parameters{blue} in the model.{reset}')
         print('')
 
-    # this function returns the loss value
     def get_loss(self):
+        """
+        Print network details
+
+        Returns
+        ----------
+        loss
+        """
 
         return self.loss
 
-    # this function returns the image and the labels involved in the training for saving and displaying
     def get_train_images(self, step):
+        """
+        Generate an image that contains the training image, the prediction and the label
+
+        Parameters
+        ----------
+        step: the number of step during the optimisation process
+        """
 
         t = ToTensor()
 
@@ -235,8 +284,14 @@ class TheModel():
 
         return t(labelled_image)
 
-    # this function returns the output image and the RGB image during testing
     def get_test_outputs(self):
+        """
+        Return the output image and the RGB image during testing
+
+        Returns
+        ----------
+        ret: dictionary containing the image, ground truth label and the prediction
+        """
 
         ret = OrderedDict()
         ret['image'] = self.image
@@ -248,4 +303,11 @@ class TheModel():
         return ret
     
     def return_model(self):
+        """
+        Return the network
+
+        Returns
+        ----------
+        net: the network
+        """
         return self.net
