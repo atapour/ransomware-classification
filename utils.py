@@ -73,12 +73,12 @@ class Display():
 
         if not hasattr(self, 'plot_data'):
             self.plot_data = {'X': [], 'Y': [], 'legend': ['Loss']}
-        self.plot_data['X'].append(step)
-        self.plot_data['Y'].append([np.float(loss)])
+        self.plot_data['X'].append(np.float(step))
+        self.plot_data['Y'].append(np.float(loss))
 
         try:
             self.vis.line(
-                X=np.stack([np.array(self.plot_data['X'])] * len(self.plot_data['legend']), 1),
+                X=np.array(self.plot_data['X']),
                 Y=np.array(self.plot_data['Y']),
                 opts={
                     'title': self.name + ' -- loss over time',
