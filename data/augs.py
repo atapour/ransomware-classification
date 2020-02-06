@@ -301,7 +301,7 @@ class RandomPerspective(object):
 
         A = torch.tensor(matrix, dtype=torch.float)
         B = torch.tensor(startpoints, dtype=torch.float).view(8)
-        res = torch.gels(B, A)[0]
+        res = torch.lstsq(B, A)[0]
 
         return res.squeeze_(1).tolist()
 
