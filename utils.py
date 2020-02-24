@@ -31,7 +31,7 @@ class Display():
         self.win_size = args.display_winsize
         self.name = args.name
         self.args = args
-        if self.display_id > 0:
+        if self.display_id > 0 and args.display:
             import visdom
             self.ncols = args.display_ncols
             self.vis = visdom.Visdom(server=args.display_server, port=args.display_port, env=args.display_env, raise_exceptions=True)
