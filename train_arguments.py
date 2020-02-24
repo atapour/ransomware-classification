@@ -1,5 +1,4 @@
 import argparse
-import colorama
 import os
 
 class Arguments():
@@ -28,6 +27,7 @@ class Arguments():
         parser.add_argument('--which_checkpoint', type=str, default='latest', help='the checkpoint to be loaded to resume training. Checkpoints are identified and saved by the number of steps passed during training.')
         parser.add_argument('--checkpoints_dir', type=str, default='checkpoints', help='the path to where the model is saved.')
         parser.add_argument('--print_freq', default=50, type=int, help='how many steps before printing the loss values to the standard output for inspection purposes only.')
+        parser.add_argument('--display', action='store_true', help='display the results periodically via visdom')
         parser.add_argument('--display_winsize', type=int, default=256, help='display window size for visdom.')
         parser.add_argument('--display_freq', type=int, default=50, help='frequency of showing training results on screen using visdom.')
         parser.add_argument('--display_ncols', type=int, default=0, help='if positive, display all images in a single visdom web panel with certain number of images per row.')
@@ -53,18 +53,8 @@ class Arguments():
 
     def print_args(self, args):
 
-        # setting up the colors:
-        reset = colorama.Style.RESET_ALL
-        magenta = colorama.Fore.MAGENTA
-        blue = colorama.Fore.BLUE
-
         txt = '\n'
 
-        txt += '{}The default arguments are displayed in blue!{}\n'.format(blue, reset)
-        txt += '{}The specified arguments are displayed in magenta!{}\n'.format(magenta, reset)
-
-
-        txt += '\n'
         txt += '-------------------- Arguments --------------------\n'
 
         for k, v in sorted(vars(args).items()):
@@ -72,12 +62,10 @@ class Arguments():
             comment = ''
             default = self.parser.get_default(k)
 
-            color = blue if v == default else magenta
-
             if v != default:
                 comment = '\t[default: %s]' % str(default)
 
-            txt += '{}{:>25}: {:<30}{}{}\n'.format(color, str(k), str(v), comment, reset)
+            txt += '{:>25}: {:<30}{}\n'.format(str(k), str(v), comment)
 
         txt += '----------------------- End -----------------------'
         txt += '\n'

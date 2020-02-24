@@ -1,4 +1,3 @@
-import colorama
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -10,12 +9,6 @@ from data import create_loader
 from model import create_model
 from test_arguments import Arguments
 from utils import calculate_f1_score, multiclass_roc_auc_score
-
-# setting up the colors:
-reset = colorama.Style.RESET_ALL
-blue = colorama.Fore.BLUE
-red = colorama.Fore.RED
-green = colorama.Fore.GREEN
 
 #-----------------------------------------
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -39,7 +32,7 @@ neg_dataset.transform = transforms
 neg_loader = torch.utils.data.DataLoader(neg_dataset, batch_size=1, num_workers=4, shuffle=False, drop_last=False)
 
 nl = '\n'
-print(f'{blue}There are a total number of {red}{len(pos_loader)}{blue} images in the positive test data set and {red}{len(neg_loader)}{blue} images in the negative test data set.{reset}{nl}')
+print(f'There are a total number of {len(pos_loader)} images in the positive test data set and {len(neg_loader)} images in the negative test data set.{nl}')
 
 if args.arch != 'AmirNet_DO' and args.arch != 'AmirNet_CDO' and args.arch != 'AmirNet_VDO':
         raise ValueError('The network you have selected cannot be used to obtain uncertainty.')
@@ -50,7 +43,7 @@ model.set_up(args)
 
 network = model.return_model()
 
-print(f'{nl}{red}Processing the positive test images has begun..{reset}{nl}')
+print(f'{nl}Processing the positive test images has begun..{nl}')
 
 gts = []
 preds = []
@@ -94,9 +87,9 @@ f1 = calculate_f1_score(gts, preds)
 auc = multiclass_roc_auc_score(gts, preds)
 
 print('Positive test data processing completed.')
-print(f'Accuracy: {green}{accuracy:.4f}{reset} -- F1 Score: {green}{f1:.4f}{reset} -- AUC: {green}{auc:.4f}{reset} -- {red}Uncertainty: {np.mean(uncertainty_list)}{reset}')
+print(f'Accuracy: {accuracy:.4f} -- F1 Score: {f1:.4f} -- AUC: {auc:.4f} -- Uncertainty: {np.mean(uncertainty_list)}')
 
-print(f'{nl}{red}Processing the negative test images has begun..{reset}{nl}')
+print(f'{nl}Processing the negative test images has begun..{nl}')
 
 uncertainty_list = []
 confidence_list = []
@@ -126,4 +119,4 @@ with torch.no_grad():
                 confidence_list.append(confidence)
 
 print('Negative test data processing completed.')
-print(f'{red}Uncertainty: {np.mean(uncertainty_list)}{reset}')
+print(f'Uncertainty: {np.mean(uncertainty_list)}')

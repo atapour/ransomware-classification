@@ -2,7 +2,6 @@ import glob
 import os
 from collections import OrderedDict
 
-import colorama
 import cv2
 import numpy as np
 import torch
@@ -201,16 +200,11 @@ class TheModel():
         Print network details
         """
 
-        # setting up the pretty colors:
-        reset = colorama.Style.RESET_ALL
-        blue = colorama.Fore.BLUE
-        red = colorama.Fore.RED
-
         num_params = 0
         for param in self.net.parameters():
             num_params += param.numel()
 
-        print(f'{blue}There are a total number of {red}{num_params} parameters{blue} in the model.{reset}')
+        print(f'There are a total number of {num_params} parameters in the model.')
         print('')
 
     def get_loss(self):
