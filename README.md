@@ -84,7 +84,7 @@ This work is created as part of the project published in the following:
 ## Reference:
 
 [A King's Ransom for Encryption: Ransomware Classification using AugmentedOne-Shot Learning and Bayesian Approximation](https://arxiv.org/pdf/1908.06750.pdf)
-(A. Atapour-Abarghouei, S. Bonner and A.S. McGough), under review in IEEE Int. Conf. Big Data, 2019. [[pdf](https://arxiv.org/pdf/1908.06750.pdf)]
+(A. Atapour-Abarghouei, S. Bonner and A.S. McGough), in the Proceedings of the IEEE Int. Conf. Big Data, 2019. [[pdf](https://arxiv.org/pdf/1908.06750.pdf)]
 
 ```
 
